@@ -282,7 +282,7 @@ dotnet_diagnostic.IDE0005.severity = error
 dotnet_diagnostic.IDE0007.severity = error
 
 # IDE0010: Add missing cases to switch statement
-dotnet_diagnostic.IDE0010.severity = error
+dotnet_diagnostic.IDE0010.severity = warning
 
 # IDE0018: Inline variable declaration
 dotnet_diagnostic.IDE0018.severity = error

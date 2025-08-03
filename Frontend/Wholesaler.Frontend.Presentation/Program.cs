@@ -55,7 +55,3 @@ await login.RenderAsync();
 
 var menuView = ActivatorUtilities.CreateInstance<MenuView>(app.Services);
 await menuView.RenderAsync();
-
-
-
-

@@ -4,344 +4,343 @@ using Wholesaler.Frontend.DataAccess.Http;
 using Wholesaler.Frontend.Domain.Interfaces;
 using Wholesaler.Frontend.Domain.ValueObjects;
 
-namespace Wholesaler.Frontend.DataAccess
+namespace Wholesaler.Frontend.DataAccess;
+
+public class WholesalerClient : RequestService,
+    IUserService,
+    IClientRepository,
+    IWorkDayRepository,
+    IWorkTaskRepository,
+    IUserRepository,
+    IRequirementRepository,
+    IStorageRepository,
+    IDeliveryRepository
 {
-    public class WholesalerClient : RequestService,
-        IUserService,
-        IWorkDayRepository,
-        IWorkTaskRepository,
-        IUserRepository,
-        IRequirementRepository,
-        IClientRepository,
-        IStorageRepository,
-        IDeliveryRepository
+    private const string ApiPath = "http://localhost:5050";
+
+    public Task<ExecutionResultGeneric<UserDto>> TryLoginWithDataFromUserAsync(string loginFromUser, string passwordFromUser)
     {
-        private const string ApiPath = "http://localhost:5050";
-
-        public async Task<ExecutionResultGeneric<UserDto>> TryLoginWithDataFromUserAsync(string loginFromUser, string passwordFromUser)
+        var request = new Request<LoginUserRequestModel, UserDto>()
         {
-            var request = new Request<LoginUserRequestModel, UserDto>()
+            Path = $"{ApiPath}/users/actions/login",
+            Method = HttpMethod.Post,
+            Content = new()
             {
-                Path = $"{ApiPath}/users/actions/login",
-                Method = HttpMethod.Post,
-                Content = new()
-                {
-                    Login = loginFromUser,
-                    Password = passwordFromUser
-                }
-            };
+                Login = loginFromUser,
+                Password = passwordFromUser
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkdayDto>> StartWorkingAsync(Guid userId)
+    public Task<ExecutionResultGeneric<WorkdayDto>> StartWorkingAsync(Guid userId)
+    {
+        var request = new Request<StartWorkdayRequestModel, WorkdayDto>()
         {
-            var request = new Request<StartWorkdayRequestModel, WorkdayDto>()
+            Path = $"{ApiPath}/workdays/actions/start",
+            Method = HttpMethod.Post,
+            Content = new()
             {
-                Path = $"{ApiPath}/workdays/actions/start",
-                Method = HttpMethod.Post,
-                Content = new StartWorkdayRequestModel()
-                {
-                    UserId = userId,
-                }
-            };
+                UserId = userId
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkdayDto>> GetWorkdayAsync(Guid workdayid)
+    public Task<ExecutionResultGeneric<WorkdayDto>> GetWorkdayAsync(Guid workdayid)
+    {
+        var request = new Request<HttpRequestMessage, WorkdayDto>()
         {
-            var request = new Request<HttpRequestMessage, WorkdayDto>()
-            {
-                Path = $"{ApiPath}/workdays/{workdayid}",
-                Method = HttpMethod.Get,
-            };
+            Path = $"{ApiPath}/workdays/{workdayid}",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkdayDto>> FinishWorkingAsync(Guid userId)
+    public Task<ExecutionResultGeneric<WorkdayDto>> FinishWorkingAsync(Guid userId)
+    {
+        var request = new Request<FinishWorkdayRequestModel, WorkdayDto>()
         {
-            var request = new Request<FinishWorkdayRequestModel, WorkdayDto>()
+            Path = $"{ApiPath}/workdays/actions/finish",
+            Method = HttpMethod.Post,
+            Content = new()
             {
-                Path = $"{ApiPath}/workdays/actions/finish",
-                Method = HttpMethod.Post,
-                Content = new FinishWorkdayRequestModel()
-                {
-                    UserId = userId,
-                }
-            };
+                UserId = userId
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkTaskDto>> AssignTaskAsync(Guid workTaskId, Guid userId)
+    public Task<ExecutionResultGeneric<WorkTaskDto>> AssignTaskAsync(Guid workTaskId, Guid userId)
+    {
+        var request = new Request<AssignTaskRequestModel, WorkTaskDto>()
         {
-            var request = new Request<AssignTaskRequestModel, WorkTaskDto>()
+            Path = $"{ApiPath}/worktasks/{workTaskId}/actions/assign",
+            Method = HttpMethod.Post,
+            Content = new()
             {
-                Path = $"{ApiPath}/worktasks/{workTaskId}/actions/assign",
-                Method = HttpMethod.Post,
-                Content = new AssignTaskRequestModel()
-                {
-                    UserId = userId,
-                }
-            };
+                UserId = userId
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetNotAssignWorkTasksAsync()
+    public Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetNotAssignWorkTasksAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
-            {
-                Path = $"{ApiPath}/worktasks/unassigned",
-                Method = HttpMethod.Get,
-            };
+            Path = $"{ApiPath}/worktasks/unassigned",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetAssignedTaskAsync()
+    public Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetAssignedTaskAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
-            {
-                Path = $"{ApiPath}/worktasks/assigned",
-                Method = HttpMethod.Get,
-            };
+            Path = $"{ApiPath}/worktasks/assigned",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<UserDto>>> GetEmployeesAsync()
+    public Task<ExecutionResultGeneric<List<UserDto>>> GetEmployeesAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<UserDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<UserDto>>()
-            {
-                Path = $"{ApiPath}/employees",
-                Method = HttpMethod.Get,
-            };
+            Path = $"{ApiPath}/employees",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetAssignedTaskToAnEmployeeAsync(Guid userId)
+    public Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetAssignedTaskToAnEmployeeAsync(Guid userId)
+    {
+        var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
-            {
-                Path = $"{ApiPath}/worktasks/assignedToAnEmployee?userId={userId}",
-                Method = HttpMethod.Get,
-            };
+            Path = $"{ApiPath}/worktasks/assignedToAnEmployee?userId={userId}",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkTaskDto>> ChangeOwnerAsync(Guid workTaskId, Guid newOwnerId)
+    public Task<ExecutionResultGeneric<WorkTaskDto>> ChangeOwnerAsync(Guid workTaskId, Guid newOwnerId)
+    {
+        var request = new Request<ChangeOwnerRequestModel, WorkTaskDto>()
         {
-            var request = new Request<ChangeOwnerRequestModel, WorkTaskDto>()
+            Path = $"{ApiPath}/worktasks/{workTaskId}/actions/changeOwner",
+            Method = HttpMethod.Patch,
+            Content = new()
             {
-                Path = $"{ApiPath}/worktasks/{workTaskId}/actions/changeOwner",
-                Method = HttpMethod.Patch,
-                Content = new ChangeOwnerRequestModel()
-                {
-                    NewOwnerId = newOwnerId,
-                }
-            };
+                NewOwnerId = newOwnerId
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkTaskDto>> StartWorkTaskAsync(Guid workTaskId)
+    public Task<ExecutionResultGeneric<WorkTaskDto>> StartWorkTaskAsync(Guid workTaskId)
+    {
+        var request = new Request<Guid, WorkTaskDto>()
         {
-            var request = new Request<Guid, WorkTaskDto>()
-            {
-                Path = $"{ApiPath}/worktasks/{workTaskId}/actions/start",
-                Method = HttpMethod.Post,
-            };
+            Path = $"{ApiPath}/worktasks/{workTaskId}/actions/start",
+            Method = HttpMethod.Post
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkTaskDto>> StopWorkTaskAsync(Guid workTaskId)
+    public Task<ExecutionResultGeneric<WorkTaskDto>> StopWorkTaskAsync(Guid workTaskId)
+    {
+        var request = new Request<Guid, WorkTaskDto>()
         {
-            var request = new Request<Guid, WorkTaskDto>()
-            {
-                Path = $"{ApiPath}/worktasks/{workTaskId}/actions/stop",
-                Method = HttpMethod.Post,
-            };
+            Path = $"{ApiPath}/worktasks/{workTaskId}/actions/stop",
+            Method = HttpMethod.Post
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<WorkTaskDto>> FinishWorkTaskAsync(Guid workTaskId)
+    public Task<ExecutionResultGeneric<WorkTaskDto>> FinishWorkTaskAsync(Guid workTaskId)
+    {
+        var request = new Request<Guid, WorkTaskDto>()
         {
-            var request = new Request<Guid, WorkTaskDto>()
-            {
-                Path = $"{ApiPath}/worktasks/{workTaskId}/actions/finish",
-                Method = HttpMethod.Post,
-            };
+            Path = $"{ApiPath}/worktasks/{workTaskId}/actions/finish",
+            Method = HttpMethod.Post
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetStartedWorkTasksAsync()
+    public Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetStartedWorkTasksAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
-            {
-                Path = $"{ApiPath}/worktasks/started",
-                Method = HttpMethod.Get,
-            };
+            Path = $"{ApiPath}/worktasks/started",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetFinishedWorkTasksAsync()
+    public Task<ExecutionResultGeneric<List<WorkTaskDto>>> GetFinishedWorkTasksAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<WorkTaskDto>>()
-            {
-                Path = $"{ApiPath}/worktasks/finished",
-                Method = HttpMethod.Get,
-            };
+            Path = $"{ApiPath}/worktasks/finished",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<RequirementDto>> Add(int quantity, Guid clientId, Guid storageId)
+    public Task<ExecutionResultGeneric<RequirementDto>> AddAsync(int quantity, Guid clientId, Guid storageId)
+    {
+        var request = new Request<AddRequirementRequestModel, RequirementDto>()
         {
-            var request = new Request<AddRequirementRequestModel, RequirementDto>()
+            Path = $"{ApiPath}/requirements",
+            Method = HttpMethod.Post,
+            Content = new()
             {
-                Path = $"{ApiPath}/requirements",
-                Method = HttpMethod.Post,
-                Content = new AddRequirementRequestModel()
-                {
-                    ClientId = clientId,
-                    Quantity = quantity,
-                    StorageId = storageId
-                }
-            };
+                ClientId = clientId,
+                Quantity = quantity,
+                StorageId = storageId
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<RequirementDto>> EditQuantity(Guid id, int quantity)
+    public Task<ExecutionResultGeneric<RequirementDto>> EditQuantityAsync(Guid id, int quantity)
+    {
+        var request = new Request<UdpateRequirementRequestModel, RequirementDto>()
         {
-            var request = new Request<UdpateRequirementRequestModel, RequirementDto>()
+            Path = $"{ApiPath}/requirements/{id}",
+            Method = HttpMethod.Patch,
+            Content = new()
             {
-                Path = $"{ApiPath}/requirements/{id}",
-                Method = HttpMethod.Patch,
-                Content = new UdpateRequirementRequestModel()
-                {
-                    Quantity = quantity
-                }
-            };
+                Quantity = quantity
+            }
+        };
 
-            return await SendAsync(request);
-        }
-        public async Task<ExecutionResultGeneric<List<RequirementDto>>> GetAllRequirements()
+        return SendAsync(request);
+    }
+
+    public Task<ExecutionResultGeneric<List<RequirementDto>>> GetAllRequirementsAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<RequirementDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<RequirementDto>>()
-            {
-                Path = $"{ApiPath}/requirements",
-                Method = HttpMethod.Get
-            };
+            Path = $"{ApiPath}/requirements",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<RequirementDto>>> GetRequirements(Guid storageId)
+    public Task<ExecutionResultGeneric<List<RequirementDto>>> GetRequirementsAsync(Guid storageId)
+    {
+        var request = new Request<HttpRequestMessage, List<RequirementDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<RequirementDto>>()
-            {
-                Path = $"{ApiPath}/requirements/withStorageId?storageId={storageId}",
-                Method = HttpMethod.Get
-            };
+            Path = $"{ApiPath}/requirements/withStorageId?storageId={storageId}",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<RequirementDto>>> GetRequirementsByStatus(string status)
+    public Task<ExecutionResultGeneric<List<RequirementDto>>> GetRequirementsByStatusAsync(string status)
+    {
+        var request = new Request<HttpRequestMessage, List<RequirementDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<RequirementDto>>()
-            {
-                Path = $"{ApiPath}/requirements/byStatus?status={status}",
-                Method = HttpMethod.Get
-            };
+            Path = $"{ApiPath}/requirements/byStatus?status={status}",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<RequirementDto>> CompleteRequirement(Guid id)
+    public Task<ExecutionResultGeneric<RequirementDto>> CompleteRequirementAsync(Guid id)
+    {
+        var request = new Request<Guid, RequirementDto>()
         {
-            var request = new Request<Guid, RequirementDto>()
-            {
-                Path = $"{ApiPath}/requirements/{id}/actions/complete",
-                Method = HttpMethod.Patch
-            };
+            Path = $"{ApiPath}/requirements/{id}/actions/complete",
+            Method = HttpMethod.Patch
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<ClientDto>>> GetAllClients()
+    public Task<ExecutionResultGeneric<List<ClientDto>>> GetAllClientsAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<ClientDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<ClientDto>>()
-            {
-                Path = $"{ApiPath}/clients",
-                Method = HttpMethod.Get
-            };
+            Path = $"{ApiPath}/clients",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<StorageDto>> Add(string name)
+    public Task<ExecutionResultGeneric<StorageDto>> AddAsync(string name)
+    {
+        var request = new Request<AddStorageRequestModel, StorageDto>()
         {
-            var request = new Request<AddStorageRequestModel, StorageDto>()
+            Path = $"{ApiPath}/storages",
+            Method = HttpMethod.Post,
+            Content = new()
             {
-                Path = $"{ApiPath}/storages",
-                Method = HttpMethod.Post,
-                Content = new AddStorageRequestModel()
-                {
-                    Name = name
-                }
-            };
+                Name = name
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<List<StorageDto>>> GetAllStorages()
+    public Task<ExecutionResultGeneric<List<StorageDto>>> GetAllStoragesAsync()
+    {
+        var request = new Request<HttpRequestMessage, List<StorageDto>>()
         {
-            var request = new Request<HttpRequestMessage, List<StorageDto>>()
-            {
-                Path = $"{ApiPath}/storages",
-                Method = HttpMethod.Get
-            };
+            Path = $"{ApiPath}/storages",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<StorageDto>> Deliver(Guid id, int quantity, Guid personId)
+    public Task<ExecutionResultGeneric<StorageDto>> DeliverAsync(Guid id, int quantity, Guid personId)
+    {
+        var request = new Request<UpdateStorageRequestModel, StorageDto>()
         {
-            var request = new Request<UpdateStorageRequestModel, StorageDto>()
+            Path = $"{ApiPath}/storages/{id}/actions/deliver",
+            Method = HttpMethod.Patch,
+            Content = new()
             {
-                Path = $"{ApiPath}/storages/{id}/actions/deliver",
-                Method = HttpMethod.Patch,
-                Content = new UpdateStorageRequestModel()
-                {
-                    Quantity = quantity,
-                    PersonId = personId
-                }
-            };
+                Quantity = quantity,
+                PersonId = personId
+            }
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
+    }
 
-        public async Task<ExecutionResultGeneric<float>> GetCosts(long from, long to)
+    public Task<ExecutionResultGeneric<float>> GetCostsAsync(long from, long to)
+    {
+        var request = new Request<HttpRequestMessage, float>()
         {
-            var request = new Request<HttpRequestMessage, float>()
-            {
-                Path = $"{ApiPath}/raports/costs?from={from}&to={to}",
-                Method = HttpMethod.Get
-            };
+            Path = $"{ApiPath}/raports/costs?from={from}&to={to}",
+            Method = HttpMethod.Get
+        };
 
-            return await SendAsync(request);
-        }
+        return SendAsync(request);
     }
 }
-

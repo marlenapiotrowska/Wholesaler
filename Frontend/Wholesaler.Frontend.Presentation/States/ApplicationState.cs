@@ -2,607 +2,604 @@
 using Wholesaler.Frontend.Presentation.Exceptions;
 using Wholesaler.Frontend.Presentation.States.Interfaces;
 
-namespace Wholesaler.Frontend.Presentation.States
+namespace Wholesaler.Frontend.Presentation.States;
+
+internal class ApplicationState : IState
 {
-    internal class ApplicationState : IState
+    private UserDto? _loggedUser;
+    private EmployeeViews? _employeeViews;
+    private ManagerViews? _managerViews;
+    private OwnerViews? _ownerViews;
+
+    public void Initialize()
     {
-        private UserDto? _loggedUser;
-        private EmployeeViews? _employeeViews;
-        private ManagerViews? _managerViews;
-        private OwnerViews? _ownerViews;
+        _loggedUser = null;
+        _employeeViews = null;
+        _managerViews = null;
+        _ownerViews = null;
+    }
+
+    public void Login(UserDto user)
+    {
+        if (_loggedUser != null)
+            throw new InvalidApplicationStateException("User is already logged in.");
+
+        _loggedUser = user;
+    }
+
+    public UserDto GetLoggedInUser()
+    {
+        if (_loggedUser == null)
+            throw new InvalidApplicationStateException("User is not logged in.");
+
+        return _loggedUser;
+    }
+
+    public EmployeeViews GetEmployeeViews()
+    {
+        if (_employeeViews == null)
+        {
+            _employeeViews = new();
+            _employeeViews.Initialize();
+        }
+
+        return _employeeViews;
+    }
+
+    public ManagerViews GetManagerViews()
+    {
+        if (_managerViews == null)
+        {
+            _managerViews = new();
+            _managerViews.Initialize();
+        }
+
+        return _managerViews;
+    }
+
+    public OwnerViews GetOwnerViews()
+    {
+        if (_ownerViews == null)
+        {
+            _ownerViews = new();
+            _ownerViews.Initialize();
+        }
+
+        return _ownerViews;
+    }
+}
+
+internal class EmployeeViews : IState
+    {
+        public StartWorkdayState? StartWorkday { get; private set; }
+        public FinishWorkdayState? FinishWorkday { get; private set; }
+        public GetAssignedTasksState? GetAssignedTasks { get; private set; }
+        public StartWorkTaskState? StartWorkTask { get; private set; }
+        public StopWorkTaskState? StopWorkTask { get; private set; }
+        public FinishWorkTaskState? FinishWorkTask { get; private set; }
+        public MushroomsDeliverState? MushroomsDelivery { get; private set; }
 
         public void Initialize()
         {
-            _loggedUser = null;
-            _employeeViews = null;
-            _managerViews = null;
-            _ownerViews = null;
+            StartWorkday = null;
+            FinishWorkday = null;
+            GetAssignedTasks = null;
+            StopWorkTask = null;
+            FinishWorkTask = null;
+            MushroomsDelivery = null;
         }
 
-        public void Login(UserDto user)
+        public StartWorkdayState GetStartWorkday()
         {
-            if (_loggedUser != null)
-                throw new InvalidApplicationStateException("User is already logged in.");
-
-            _loggedUser = user;
-        }
-
-        public UserDto GetLoggedInUser()
-        {
-            if (_loggedUser == null)
-                throw new InvalidApplicationStateException($"User is not logged in.");
-
-            return _loggedUser;
-        }
-
-        public EmployeeViews GetEmployeeViews()
-        {
-            if (_employeeViews == null)
+            if (StartWorkday == null)
             {
-                _employeeViews = new EmployeeViews();
-                _employeeViews.Initialize();
+                StartWorkday = new();
+                StartWorkday.Initialize();
             }
 
-            return _employeeViews;
+            return StartWorkday;
         }
 
-        public ManagerViews GetManagerViews()
+        public FinishWorkdayState GetFinishWorkday()
         {
-            if (_managerViews == null)
+            if (FinishWorkday == null)
             {
-                _managerViews = new ManagerViews();
-                _managerViews.Initialize();
+                FinishWorkday = new();
+                FinishWorkday.Initialize();
             }
 
-            return _managerViews;
+            return FinishWorkday;
         }
 
-        public OwnerViews GetOwnerViews()
+        public GetAssignedTasksState GetAssigned()
         {
-            if (_ownerViews == null)
+            if (GetAssignedTasks == null)
             {
-                _ownerViews = new OwnerViews();
-                _ownerViews.Initialize();
+                GetAssignedTasks = new();
+                GetAssignedTasks.Initialize();
             }
 
-            return _ownerViews;
+            return GetAssignedTasks;
+        }
 
+        public StartWorkTaskState GetStartWorkTask()
+        {
+            if (StartWorkTask == null)
+            {
+                StartWorkTask = new();
+                StartWorkTask.Initialize();
+            }
+
+            return StartWorkTask;
+        }
+
+        public StopWorkTaskState GetStopWorkTask()
+        {
+            if (StopWorkTask == null)
+            {
+                StopWorkTask = new();
+                StopWorkTask.Initialize();
+            }
+
+            return StopWorkTask;
+        }
+
+        public FinishWorkTaskState GetFinishWorkTask()
+        {
+            if (FinishWorkTask == null)
+            {
+                FinishWorkTask = new();
+                FinishWorkTask.Initialize();
+            }
+
+            return FinishWorkTask;
+        }
+
+        public MushroomsDeliverState GetMushroomsDelivery()
+        {
+            if (MushroomsDelivery == null)
+            {
+                MushroomsDelivery = new();
+                MushroomsDelivery.Initialize();
+            }
+
+            return MushroomsDelivery;
         }
     }
 
-        internal class EmployeeViews : IState
+internal class StartWorkdayState : IState
+    {
+        public WorkdayDto? Workday { get; private set; }
+
+        public void Initialize()
         {
-            public StartWorkdayState? StartWorkday { get; private set; }
-            public FinishWorkdayState? FinishWorkday { get; private set; }
-            public GetAssignedTasksState? GetAssignedTasks { get; private set; }
-            public StartWorkTaskState? StartWorkTask { get; private set; }
-            public StopWorkTaskState? StopWorkTask { get; private set; }
-            public FinishWorkTaskState? FinishWorkTask { get; private set; }
-            public MushroomsDeliverState? MushroomsDelivery { get; private set; }
-
-            public void Initialize()
-            {
-                StartWorkday = null;
-                FinishWorkday = null;
-                GetAssignedTasks = null;
-                StopWorkTask = null;
-                FinishWorkTask = null;
-                MushroomsDelivery = null;
-            }
-
-            public StartWorkdayState GetStartWorkday()
-            {
-                if (StartWorkday == null)
-                {
-                    StartWorkday = new StartWorkdayState();
-                    StartWorkday.Initialize();
-                }
-
-                return StartWorkday;
-            }
-
-            public FinishWorkdayState GetFinishWorkday()
-            {
-                if (FinishWorkday == null)
-                {
-                    FinishWorkday = new FinishWorkdayState();
-                    FinishWorkday.Initialize();
-                }
-
-                return FinishWorkday;
-            }
-
-            public GetAssignedTasksState GetAssigned()
-            {
-                if (GetAssignedTasks == null)
-                {
-                    GetAssignedTasks = new GetAssignedTasksState();
-                    GetAssignedTasks.Initialize();
-                }
-
-                return GetAssignedTasks;
-            }
-
-            public StartWorkTaskState GetStartWorkTask()
-            {
-                if (StartWorkTask == null)
-                {
-                    StartWorkTask = new StartWorkTaskState();
-                    StartWorkTask.Initialize();
-                }
-
-                return StartWorkTask;
-            }
-
-            public StopWorkTaskState GetStopWorkTask()
-            {
-                if (StopWorkTask == null)
-                {
-                    StopWorkTask = new StopWorkTaskState();
-                    StopWorkTask.Initialize();
-                }
-
-                return StopWorkTask;
-            }
-
-            public FinishWorkTaskState GetFinishWorkTask()
-            {
-                if (FinishWorkTask == null)
-                {
-                    FinishWorkTask = new FinishWorkTaskState();
-                    FinishWorkTask.Initialize();
-                }
-
-                return FinishWorkTask;
-            }
-
-            public MushroomsDeliverState GetMushroomsDelivery()
-            {
-                if (MushroomsDelivery == null)
-                {
-                    MushroomsDelivery = new MushroomsDeliverState();
-                    MushroomsDelivery.Initialize();
-                }
-
-                return MushroomsDelivery;
-            }
+            Workday = null;
         }
 
-        internal class StartWorkdayState : IState
+        public void StartWork(WorkdayDto workday)
         {
-            public WorkdayDto? Workday { get; private set; }
-
-            public void Initialize()
-            {
-                Workday = null;
-            }
-
-            public void StartWork(WorkdayDto workday)
-            {
-                Workday = workday;
-            }
-
-            public WorkdayDto GetWorkday()
-            {
-                if (Workday == null)
-                    throw new InvalidApplicationStateException("Workday is null");
-
-                return Workday;
-            }
+            Workday = workday;
         }
 
-        internal class FinishWorkdayState : IState
+        public WorkdayDto GetWorkday()
         {
-            public WorkdayDto? Workday { get; private set; }
+            if (Workday == null)
+                throw new InvalidApplicationStateException("Workday is null");
 
-            public void Initialize()
-            {
-                Workday = null;
-            }
+            return Workday;
+        }
+    }
 
-            public WorkdayDto GetWorkday()
-            {
-                if (Workday == null)
-                    throw new InvalidApplicationStateException("Workday is null");
+internal class FinishWorkdayState : IState
+    {
+        public WorkdayDto? Workday { get; private set; }
 
-                return Workday;
-            }
-
-            public void FinishWork(WorkdayDto workday)
-            {
-                Workday = workday;
-            }
+        public void Initialize()
+        {
+            Workday = null;
         }
 
-        internal class GetAssignedTasksState : IState
+        public WorkdayDto GetWorkday()
         {
-            public List<WorkTaskDto>? Worktasks { get; private set; }
+            if (Workday == null)
+                throw new InvalidApplicationStateException("Workday is null");
 
-            public void Initialize()
-            {
-                Worktasks = null;
-            }
-
-            public void GetTasks(List<WorkTaskDto> workTasks)
-            {
-                Worktasks = workTasks;
-            }
+            return Workday;
         }
 
-        internal class StartWorkTaskState : IState
+        public void FinishWork(WorkdayDto workday)
         {
-            public WorkTaskDto? WorkTask { get; private set; }
+            Workday = workday;
+        }
+    }
 
-            public void Initialize()
-            {
-                WorkTask = null;
-            }
+internal class GetAssignedTasksState : IState
+    {
+        public List<WorkTaskDto>? Worktasks { get; private set; }
 
-            public void StartWorkTask(WorkTaskDto workTask)
-            {
-                WorkTask = workTask;
-            }
+        public void Initialize()
+        {
+            Worktasks = null;
         }
 
-        internal class StopWorkTaskState : IState
+        public void GetTasks(List<WorkTaskDto> workTasks)
         {
-            public WorkTaskDto? WorkTask { get; private set; }
+            Worktasks = workTasks;
+        }
+    }
 
-            public void Initialize()
-            {
-                WorkTask = null;
-            }
+internal class StartWorkTaskState : IState
+    {
+        public WorkTaskDto? WorkTask { get; private set; }
 
-            public void StopWorkTask(WorkTaskDto workTask)
-            {
-                WorkTask = workTask;
-            }
+        public void Initialize()
+        {
+            WorkTask = null;
         }
 
-        internal class FinishWorkTaskState : IState
+        public void StartWorkTask(WorkTaskDto workTask)
         {
-            public WorkTaskDto? WorkTask { get; private set; }
+            WorkTask = workTask;
+        }
+    }
 
-            public void Initialize()
-            {
-                WorkTask = null;
-            }
+internal class StopWorkTaskState : IState
+    {
+        public WorkTaskDto? WorkTask { get; private set; }
 
-            public void FinishWorkTask(WorkTaskDto workTask)
-            {
-                WorkTask = workTask;
-            }
+        public void Initialize()
+        {
+            WorkTask = null;
         }
 
-        internal class MushroomsDeliverState : IState
+        public void StopWorkTask(WorkTaskDto workTask)
         {
-            public Guid StorageId { get; private set; }
-            public int Quantity { get; private set; }
+            WorkTask = workTask;
+        }
+    }
 
-            public void Initialize()
-            {
-                StorageId = Guid.Empty;
-                Quantity = 0;
-            }
+internal class FinishWorkTaskState : IState
+    {
+        public WorkTaskDto? WorkTask { get; private set; }
 
-            public void GetValues(Guid storageId, int quantity)
-            {
-                StorageId = storageId;
-                Quantity = quantity;
-            }
+        public void Initialize()
+        {
+            WorkTask = null;
         }
 
-        internal class ManagerViews : IState
+        public void FinishWorkTask(WorkTaskDto workTask)
         {
-            public AssignTaskState? AssignTask { get; private set; }
-            public ChangeOwnerOfTaskState? ChangeOwnerOfTask { get; private set; }
-            public StartedWorkTasksState StartedWorkTasks { get; private set; }
-            public FinishedWorkTasksState FinishedWorkTasks { get; private set; }
-            public AddRequirementState? AddRequirement { get; private set; }
-            public MushroomsDepartState? MushroomsDepart { get; private set; }
-            public EditRequirementState? EditRequirement { get; private set; }
-            public RequirementProgressState? RequirementProgress { get; private set; }
+            WorkTask = workTask;
+        }
+    }
 
-            public void Initialize()
-            {
-                AssignTask = null;
-                ChangeOwnerOfTask = null;
-                AddRequirement = null;
-                MushroomsDepart = null;
-                EditRequirement = null;
-                RequirementProgress = null;
-            }
+internal class MushroomsDeliverState : IState
+    {
+        public Guid StorageId { get; private set; }
+        public int Quantity { get; private set; }
 
-            public AssignTaskState GetAssignTask()
-            {
-                if (AssignTask == null)
-                {
-                    AssignTask = new AssignTaskState();
-                    AssignTask.Initialize();
-                }
-
-                return AssignTask;
-            }
-
-            public ChangeOwnerOfTaskState GetChangeOwner()
-            {
-                if (ChangeOwnerOfTask == null)
-                {
-                    ChangeOwnerOfTask = new ChangeOwnerOfTaskState();
-                    ChangeOwnerOfTask.Initialize();
-                }
-
-                return ChangeOwnerOfTask;
-            }
-
-            public StartedWorkTasksState GetStartedWorkTasks()
-            {
-                if (StartedWorkTasks == null)
-                {
-                    StartedWorkTasks = new StartedWorkTasksState();
-                    StartedWorkTasks.Initialize();
-                }
-
-                return StartedWorkTasks;
-            }
-
-            public FinishedWorkTasksState GetFinishedWorkTasks()
-            {
-                if (FinishedWorkTasks == null)
-                {
-                    FinishedWorkTasks = new FinishedWorkTasksState();
-                    FinishedWorkTasks.Initialize();
-                }
-
-                return FinishedWorkTasks;
-            }
-
-            public AddRequirementState GetAddRequirement()
-            {
-                if (AddRequirement == null)
-                {
-                    AddRequirement = new AddRequirementState();
-                    AddRequirement.Initialize();
-                }
-
-                return AddRequirement;
-            }
-
-            public MushroomsDepartState GetMushroomsDeparture()
-            {
-                if (MushroomsDepart == null)
-                {
-                    MushroomsDepart = new MushroomsDepartState();
-                    MushroomsDepart.Initialize();
-                }
-
-                return MushroomsDepart;
-            }
-
-            public EditRequirementState GetEditRequirementState()
-            {
-                if (EditRequirement == null)
-                {
-                    EditRequirement = new EditRequirementState();
-                    EditRequirement.Initialize();
-                }
-
-                return EditRequirement;
-            }
-
-            public RequirementProgressState GetRequirementProgress()
-            {
-                if (RequirementProgress == null)
-                {
-                    RequirementProgress = new RequirementProgressState();
-                    RequirementProgress.Initialize();
-                }
-
-                return RequirementProgress;
-            }
+        public void Initialize()
+        {
+            StorageId = Guid.Empty;
+            Quantity = 0;
         }
 
-        internal class AssignTaskState : IState
+        public void GetValues(Guid storageId, int quantity)
         {
-            public Guid? WorkTaskId { get; private set; }
-            public WorkTaskDto? WorkTask { get; private set; }
-            public List<WorkTaskDto>? WorkTasks { get; private set; }
-            public List<UserDto>? Employees { get; private set; }
+            StorageId = storageId;
+            Quantity = quantity;
+        }
+    }
 
-            public void Initialize()
-            {
-                WorkTaskId = null;
-                WorkTask = null;
-            }
+internal class ManagerViews : IState
+    {
+        public AssignTaskState? AssignTask { get; private set; }
+        public ChangeOwnerOfTaskState? ChangeOwnerOfTask { get; private set; }
+        public StartedWorkTasksState StartedWorkTasks { get; private set; }
+        public FinishedWorkTasksState FinishedWorkTasks { get; private set; }
+        public AddRequirementState? AddRequirement { get; private set; }
+        public MushroomsDepartState? MushroomsDepart { get; private set; }
+        public EditRequirementState? EditRequirement { get; private set; }
+        public RequirementProgressState? RequirementProgress { get; private set; }
 
-            public void AssignTask(WorkTaskDto workTask)
-            {
-                WorkTask = workTask;
-            }
-
-            public void AssignTasks(List<WorkTaskDto> workTasks)
-            {
-                WorkTasks = workTasks;
-            }
-
-            public void GetEmployees(List<UserDto> employees)
-            {
-                Employees = employees;
-            }
+        public void Initialize()
+        {
+            AssignTask = null;
+            ChangeOwnerOfTask = null;
+            AddRequirement = null;
+            MushroomsDepart = null;
+            EditRequirement = null;
+            RequirementProgress = null;
         }
 
-        internal class ChangeOwnerOfTaskState : IState
+        public AssignTaskState GetAssignTask()
         {
-            public WorkTaskDto? WorkTask { get; private set; }
-            public List<WorkTaskDto>? WorkTasks { get; private set; }
-            public List<UserDto>? Employees { get; private set; }
-
-            public void Initialize()
+            if (AssignTask == null)
             {
-                WorkTask = null;
-                WorkTasks = null;
-                Employees = null;
+                AssignTask = new();
+                AssignTask.Initialize();
             }
 
-            public void GetWorkTasks(List<WorkTaskDto> workTasks)
-            {
-                WorkTasks = workTasks;
-            }
-
-            public void GetEmployees(List<UserDto> employees)
-            {
-                Employees = employees;
-            }
-
-            public void ChangeOwnerOfTask(WorkTaskDto workTask)
-            {
-                WorkTask = workTask;
-            }
+            return AssignTask;
         }
 
-        internal class StartedWorkTasksState : IState
+        public ChangeOwnerOfTaskState GetChangeOwner()
         {
-            public List<WorkTaskDto>? WorkTasks { get; private set; }
-
-            public void Initialize()
+            if (ChangeOwnerOfTask == null)
             {
-                WorkTasks = null;
+                ChangeOwnerOfTask = new();
+                ChangeOwnerOfTask.Initialize();
             }
 
-            public void GetWorkTasks(List<WorkTaskDto> workTasks)
-            {
-                WorkTasks = workTasks;
-            }
+            return ChangeOwnerOfTask;
         }
 
-        internal class FinishedWorkTasksState : IState
+        public StartedWorkTasksState GetStartedWorkTasks()
         {
-            public List<WorkTaskDto>? WorkTasks { get; private set; }
-
-            public void Initialize()
+            if (StartedWorkTasks == null)
             {
-                WorkTasks = null;
+                StartedWorkTasks = new();
+                StartedWorkTasks.Initialize();
             }
 
-            public void GetWorkTasks(List<WorkTaskDto> workTasks)
-            {
-                WorkTasks = workTasks;
-            }
+            return StartedWorkTasks;
         }
 
-        internal class AddRequirementState : IState
+        public FinishedWorkTasksState GetFinishedWorkTasks()
         {
-            public int Quantity { get; private set; }
-            public Guid ClientId { get; private set; }
-
-            public void Initialize()
+            if (FinishedWorkTasks == null)
             {
-                Quantity = 0;
-                ClientId = Guid.Empty;
+                FinishedWorkTasks = new();
+                FinishedWorkTasks.Initialize();
             }
 
-            public void GetValues(int quantity, Guid clientId)
-            {
-                Quantity = quantity;
-                ClientId = clientId;
-            }
+            return FinishedWorkTasks;
         }
 
-        internal class MushroomsDepartState : IState
+        public AddRequirementState GetAddRequirement()
         {
-            public Guid RequirementId { get; private set; }
-            public Guid StorageId { get; private set; }
-            public int Quantity { get; private set; }
-
-            public void Initialize()
+            if (AddRequirement == null)
             {
-                RequirementId = Guid.Empty;
-                StorageId = Guid.Empty;
-                Quantity = 0;
+                AddRequirement = new();
+                AddRequirement.Initialize();
             }
 
-            public void GetValues(Guid requirementId, int quantity, Guid storageId)
-            {
-                RequirementId = requirementId;
-                StorageId = storageId;
-                Quantity = quantity;
-            }
+            return AddRequirement;
         }
 
-        internal class EditRequirementState : IState
+        public MushroomsDepartState GetMushroomsDeparture()
         {
-            public Guid Id { get; private set; }
-            public int Quantity { get; private set; }
-
-            public void Initialize()
+            if (MushroomsDepart == null)
             {
-                Id = Guid.Empty;
-                Quantity = 0;
+                MushroomsDepart = new();
+                MushroomsDepart.Initialize();
             }
 
-            public void GetValues(Guid id, int quantity)
-            {
-                Id = id;
-                Quantity = quantity;
-            }
+            return MushroomsDepart;
         }
 
-        internal class RequirementProgressState : IState
+        public EditRequirementState GetEditRequirementState()
         {
-            public List<RequirementDto>? Requirements { get; private set; }
-            public string? Status { get; private set; }
-
-            public void Initialize()
+            if (EditRequirement == null)
             {
-                Requirements = new List<RequirementDto>();
-                Status = null;
+                EditRequirement = new();
+                EditRequirement.Initialize();
             }
 
-            public void GetRequirements(List<RequirementDto> requirements)
-            {
-                Requirements = requirements;
-            }
-
-            public void GetStatus(string status)
-            {
-                Status = status;
-            }
+            return EditRequirement;
         }
 
-        internal class OwnerViews : IState
+        public RequirementProgressState GetRequirementProgress()
         {
-            public CheckCostsState? CheckCosts { get; private set; }
-
-            public void Initialize()
+            if (RequirementProgress == null)
             {
-                CheckCosts = null;
+                RequirementProgress = new();
+                RequirementProgress.Initialize();
             }
 
-            public CheckCostsState GetCheckCostsState()
-            {
-                if (CheckCosts == null)
-                {
-                    CheckCosts = new CheckCostsState();
-                    CheckCosts.Initialize();
-                }
+            return RequirementProgress;
+        }
+    }
 
-                return CheckCosts;
-            }
+internal class AssignTaskState : IState
+    {
+        public Guid? WorkTaskId { get; private set; }
+        public WorkTaskDto? WorkTask { get; private set; }
+        public List<WorkTaskDto>? WorkTasks { get; private set; }
+        public List<UserDto>? Employees { get; private set; }
+
+        public void Initialize()
+        {
+            WorkTaskId = null;
+            WorkTask = null;
         }
 
-        internal class CheckCostsState : IState
+        public void AssignTask(WorkTaskDto workTask)
         {
-            public float Costs { get; private set; }
-
-            public void Initialize()
-            {
-                Costs = 0;
-            }
-
-            public void GetCosts(float costs)
-            {
-                Costs = costs;
-            }
+            WorkTask = workTask;
         }
 
-}
+        public void AssignTasks(List<WorkTaskDto> workTasks)
+        {
+            WorkTasks = workTasks;
+        }
+
+        public void GetEmployees(List<UserDto> employees)
+        {
+            Employees = employees;
+        }
+    }
+
+internal class ChangeOwnerOfTaskState : IState
+    {
+        public WorkTaskDto? WorkTask { get; private set; }
+        public List<WorkTaskDto>? WorkTasks { get; private set; }
+        public List<UserDto>? Employees { get; private set; }
+
+        public void Initialize()
+        {
+            WorkTask = null;
+            WorkTasks = null;
+            Employees = null;
+        }
+
+        public void GetWorkTasks(List<WorkTaskDto> workTasks)
+        {
+            WorkTasks = workTasks;
+        }
+
+        public void GetEmployees(List<UserDto> employees)
+        {
+            Employees = employees;
+        }
+
+        public void ChangeOwnerOfTask(WorkTaskDto workTask)
+        {
+            WorkTask = workTask;
+        }
+    }
+
+internal class StartedWorkTasksState : IState
+    {
+        public List<WorkTaskDto>? WorkTasks { get; private set; }
+
+        public void Initialize()
+        {
+            WorkTasks = null;
+        }
+
+        public void GetWorkTasks(List<WorkTaskDto> workTasks)
+        {
+            WorkTasks = workTasks;
+        }
+    }
+
+internal class FinishedWorkTasksState : IState
+    {
+        public List<WorkTaskDto>? WorkTasks { get; private set; }
+
+        public void Initialize()
+        {
+            WorkTasks = null;
+        }
+
+        public void GetWorkTasks(List<WorkTaskDto> workTasks)
+        {
+            WorkTasks = workTasks;
+        }
+    }
+
+internal class AddRequirementState : IState
+    {
+        public int Quantity { get; private set; }
+        public Guid ClientId { get; private set; }
+
+        public void Initialize()
+        {
+            Quantity = 0;
+            ClientId = Guid.Empty;
+        }
+
+        public void GetValues(int quantity, Guid clientId)
+        {
+            Quantity = quantity;
+            ClientId = clientId;
+        }
+    }
+
+internal class MushroomsDepartState : IState
+    {
+        public Guid RequirementId { get; private set; }
+        public Guid StorageId { get; private set; }
+        public int Quantity { get; private set; }
+
+        public void Initialize()
+        {
+            RequirementId = Guid.Empty;
+            StorageId = Guid.Empty;
+            Quantity = 0;
+        }
+
+        public void GetValues(Guid requirementId, int quantity, Guid storageId)
+        {
+            RequirementId = requirementId;
+            StorageId = storageId;
+            Quantity = quantity;
+        }
+    }
+
+internal class EditRequirementState : IState
+    {
+        public Guid Id { get; private set; }
+        public int Quantity { get; private set; }
+
+        public void Initialize()
+        {
+            Id = Guid.Empty;
+            Quantity = 0;
+        }
+
+        public void GetValues(Guid id, int quantity)
+        {
+            Id = id;
+            Quantity = quantity;
+        }
+    }
+
+internal class RequirementProgressState : IState
+    {
+        public List<RequirementDto>? Requirements { get; private set; }
+        public string? Status { get; private set; }
+
+        public void Initialize()
+        {
+            Requirements = new();
+            Status = null;
+        }
+
+        public void GetRequirements(List<RequirementDto> requirements)
+        {
+            Requirements = requirements;
+        }
+
+        public void GetStatus(string status)
+        {
+            Status = status;
+        }
+    }
+
+internal class OwnerViews : IState
+    {
+        public CheckCostsState? CheckCosts { get; private set; }
+
+        public void Initialize()
+        {
+            CheckCosts = null;
+        }
+
+        public CheckCostsState GetCheckCostsState()
+        {
+            if (CheckCosts == null)
+            {
+                CheckCosts = new();
+                CheckCosts.Initialize();
+            }
+
+            return CheckCosts;
+        }
+    }
+
+internal class CheckCostsState : IState
+    {
+        public float Costs { get; private set; }
+
+        public void Initialize()
+        {
+            Costs = 0;
+        }
+
+        public void GetCosts(float costs)
+        {
+            Costs = costs;
+        }
+    }

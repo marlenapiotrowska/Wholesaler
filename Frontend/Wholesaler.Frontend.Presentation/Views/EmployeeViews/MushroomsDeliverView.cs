@@ -3,57 +3,56 @@ using Wholesaler.Frontend.Presentation.States;
 using Wholesaler.Frontend.Presentation.Views.Components;
 using Wholesaler.Frontend.Presentation.Views.Generic;
 
-namespace Wholesaler.Frontend.Presentation.Views.EmployeeViews
+namespace Wholesaler.Frontend.Presentation.Views.EmployeeViews;
+
+internal class MushroomsDeliverView : View
 {
-    internal class MushroomsDeliverView : View
+    private readonly IStorageRepository _storageRepository;
+    private readonly MushroomsDeliverState _state;
+
+    public MushroomsDeliverView(IStorageRepository storageRepository, ApplicationState state) 
+        : base(state)
     {
-        private readonly IStorageRepository _storageRepository;
-        private readonly MushroomsDeliverState _state;
+        _storageRepository = storageRepository;
+        _state = State.GetEmployeeViews().GetMushroomsDelivery();
+        _state.Initialize();
+    }
 
-        public MushroomsDeliverView(IStorageRepository storageRepository, ApplicationState state) : base(state)
+    protected async override Task RenderViewAsync()
+    {
+        var role = State.GetLoggedInUser().Role;
+        var personId = State.GetLoggedInUser().Id;
+        if (role != "Employee")
+            throw new InvalidOperationException($"You can not deliver mushrooms with role {role}. Valid role is Employee.");
+
+        var deliverySuccess = false;
+
+        while (!deliverySuccess)
         {
-            _storageRepository = storageRepository;
-            _state = State.GetEmployeeViews().GetMushroomsDelivery();
-            _state.Initialize();
-        }
+            var getStorages = await _storageRepository.GetAllStoragesAsync();
 
-        protected async override Task RenderViewAsync()
-        {
-            var role = State.GetLoggedInUser().Role;
-            var personId = State.GetLoggedInUser().Id;
-            if (role != "Employee")
-                throw new InvalidOperationException($"You can not deliver mushrooms with role {role}. Valid role is Employee.");
-
-            bool deliverySuccess = false;
-
-            while (deliverySuccess is false)
+            if (!getStorages.IsSuccess)
             {
-                var getStorages = await _storageRepository.GetAllStorages();
+                var errorPage = new ErrorPageComponent(getStorages.Message);
+                errorPage.Render();
+            }
 
-                if (!getStorages.IsSuccess)
+            var selectStorage = new SelectStorageComponent(getStorages.Payload);
+            var storage = selectStorage.Render();
+
+            Console.WriteLine("Enter quantity of mushrooms you want to deliver: ");
+
+            if (int.TryParse(Console.ReadLine(), out var quantity))
+            {
+                var delivery = await _storageRepository.DeliverAsync(storage.Id, quantity, personId);
+                if (delivery.IsSuccess)
                 {
-                    var errorPage = new ErrorPageComponent(getStorages.Message);
-                    errorPage.Render();
+                    _state.GetValues(delivery.Payload.Id, quantity);
+                    Console.WriteLine("----------------------------");
+                    Console.WriteLine($"You delivered {quantity} mushrooms to a storage: {delivery.Payload.Id}");
+                    Console.ReadLine();
+                    break;
                 }
-
-                var selectStorage = new SelectStorageComponent(getStorages.Payload);
-                var storage = selectStorage.Render();
-
-                Console.WriteLine("Enter quantity of mushrooms you want to deliver: ");
-
-                if (int.TryParse(Console.ReadLine(), out int quantity))
-                {
-                    var delivery = await _storageRepository.Deliver(storage.Id, quantity, personId);
-                    if (delivery.IsSuccess)
-                    {
-                        _state.GetValues(delivery.Payload.Id, quantity);
-                        Console.WriteLine("----------------------------");
-                        Console.WriteLine($"You delivered {quantity} mushrooms to a storage: {delivery.Payload.Id}");
-                        Console.ReadLine();
-                        break;
-                    }
-                }
-                continue;
             }
         }
     }

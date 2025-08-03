@@ -1,27 +1,25 @@
-﻿
-namespace Wholesaler.Frontend.Domain.ValueObjects
+﻿namespace Wholesaler.Frontend.Domain.ValueObjects;
+
+public class ExecutionResult
 {
-    public class ExecutionResult
+    protected ExecutionResult(
+        bool isSuccess,
+        string message)
     {
-        public bool IsSuccess { get; }
-        public string Message { get; }
+        IsSuccess = isSuccess;
+        Message = message;
+    }
 
-        protected ExecutionResult(
-            bool isSuccess,
-            string message)
-        {
-            IsSuccess = isSuccess;
-            Message = message;
-        }
+    public bool IsSuccess { get; }
+    public string Message { get; }
 
-        public static ExecutionResult CreateSuccessful()
-        {
-            return new ExecutionResult(true, null);
-        }
+    public static ExecutionResult CreateSuccessful()
+    {
+        return new(true, null);
+    }
 
-        public static ExecutionResult CreateFailed(string message)
-        {
-            return new ExecutionResult(false, message);
-        }
+    public static ExecutionResult CreateFailed(string message)
+    {
+        return new(false, message);
     }
 }

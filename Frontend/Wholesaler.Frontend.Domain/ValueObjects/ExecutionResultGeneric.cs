@@ -1,28 +1,25 @@
-﻿
+﻿namespace Wholesaler.Frontend.Domain.ValueObjects;
 
-namespace Wholesaler.Frontend.Domain.ValueObjects
+public sealed class ExecutionResultGeneric<TResult> : ExecutionResult
 {
-    public class ExecutionResultGeneric<TResult> : ExecutionResult
+    private ExecutionResultGeneric(
+        bool isSuccess,
+        string message,
+        TResult payload)
+        : base(isSuccess, message)
     {
-        public TResult Payload { get; }
+        Payload = payload;
+    }
 
-        private ExecutionResultGeneric(
-            bool isSuccess,
-            string message,
-            TResult payload) : base(isSuccess, message)
-        {
-            Payload = payload;
-        }
+    public TResult Payload { get; }
 
-        public static ExecutionResultGeneric<TResult> CreateSuccessful(TResult payload)
-        {
-            return new ExecutionResultGeneric<TResult>(true, null, payload);
-        }
+    public static ExecutionResultGeneric<TResult> CreateSuccessful(TResult payload)
+    {
+        return new(true, null, payload);
+    }
 
-        public static ExecutionResultGeneric<TResult> CreateFailed(string message)
-        {
-            return new ExecutionResultGeneric<TResult>(false, message, default);
-        }
-
+    public static ExecutionResultGeneric<TResult> CreateFailed(string message)
+    {
+        return new(false, message, default);
     }
 }

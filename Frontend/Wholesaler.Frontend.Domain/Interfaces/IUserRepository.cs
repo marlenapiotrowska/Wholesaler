@@ -1,10 +1,9 @@
 ﻿using Wholesaler.Core.Dto.ResponseModels;
 using Wholesaler.Frontend.Domain.ValueObjects;
 
-namespace Wholesaler.Frontend.Domain.Interfaces
+namespace Wholesaler.Frontend.Domain.Interfaces;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        Task<ExecutionResultGeneric<List<UserDto>>> GetEmployeesAsync();
-    }
+    Task<ExecutionResultGeneric<List<UserDto>>> GetEmployeesAsync();
 }

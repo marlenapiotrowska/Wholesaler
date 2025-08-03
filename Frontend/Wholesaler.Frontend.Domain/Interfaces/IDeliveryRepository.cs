@@ -1,9 +1,8 @@
 ﻿using Wholesaler.Frontend.Domain.ValueObjects;
 
-namespace Wholesaler.Frontend.Domain.Interfaces
+namespace Wholesaler.Frontend.Domain.Interfaces;
+
+public interface IDeliveryRepository
 {
-    public interface IDeliveryRepository
-    {
-        Task<ExecutionResultGeneric<float>> GetCosts(long from, long to);
-    }
+    Task<ExecutionResultGeneric<float>> GetCostsAsync(long from, long to);
 }

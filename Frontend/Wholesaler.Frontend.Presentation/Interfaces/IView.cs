@@ -1,7 +1,6 @@
-﻿namespace Wholesaler.Frontend.Presentation.Interfaces
+﻿namespace Wholesaler.Frontend.Presentation.Interfaces;
+
+internal interface IView
 {
-    internal interface IView
-    {
-        Task RenderAsync();
-    }
+    Task RenderAsync();
 }

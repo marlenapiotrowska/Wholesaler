@@ -1,7 +1,6 @@
-﻿namespace Wholesaler.Frontend.Presentation.States.Interfaces
+﻿namespace Wholesaler.Frontend.Presentation.States.Interfaces;
+
+internal interface IState
 {
-    internal interface IState
-    {
-        void Initialize();
-    }
+    void Initialize();
 }

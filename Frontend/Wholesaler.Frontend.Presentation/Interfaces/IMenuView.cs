@@ -1,6 +1,5 @@
-﻿namespace Wholesaler.Frontend.Presentation.Interfaces
+﻿namespace Wholesaler.Frontend.Presentation.Interfaces;
+
+internal interface IMenuView : IView
 {
-    internal interface IMenuView : IView
-    {
-    }
 }
