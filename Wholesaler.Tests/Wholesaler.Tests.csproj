@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -31,7 +31,6 @@
     <ProjectReference Include="..\Backend\Wholesaler.Backend.Api\Wholesaler.Backend.Api.csproj" />
     <ProjectReference Include="..\Backend\Wholesaler.Backend.DataAccess\Wholesaler.Backend.DataAccess.csproj" />
     <ProjectReference Include="..\Backend\Wholesaler.Backend.Domain\Wholesaler.Backend.Domain.csproj" />
-    <ProjectReference Include="..\Core\Wholesaler.Core.Dto\Wholesaler.Core.Dto.csproj" />
   </ItemGroup>
 
 </Project>

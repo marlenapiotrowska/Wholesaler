@@ -50,7 +50,7 @@ public class ClientController : ControllerBase
         var clients = _clientRepository.GetAll();
 
         return clients
-            .ConvertAll(c => _clientFactory.Create(c));
+            .ConvertAll(_clientFactory.Create);
     }
 
     [HttpGet]

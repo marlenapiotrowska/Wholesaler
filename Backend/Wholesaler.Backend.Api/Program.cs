@@ -14,7 +14,6 @@ using Wholesaler.Backend.Domain.Interfaces;
 using Wholesaler.Backend.Domain.Providers.Interfaces;
 using Wholesaler.Backend.Domain.Repositories;
 using Wholesaler.Backend.Domain.Services;
-using Wholesaler.Barckend.Domain.Providers;
 using ClientFactoryApi = Wholesaler.Backend.Api.Factories.ClientFactory;
 using ClientFactoryDomain = Wholesaler.Backend.Domain.Factories.ClientFactory;
 using IClientFactoryApi = Wholesaler.Backend.Api.Factories.Interfaces.IClientFactory;
@@ -40,6 +39,15 @@ builder.Services.AddDbContext<WholesalerContext>(
                 if (l.Contains("CommandExecuting"))
                     Log.Logger.Information(l);
             }));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowVueApp",
+        policy => policy.WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
 
 builder.Host.UseSerilog((_, configuration) => configuration
     .WriteTo.File(new CompactJsonFormatter(), "logs/log.txt", rollingInterval: RollingInterval.Day)
@@ -82,7 +90,7 @@ builder.Services.AddTransient<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddTransient<IRaportService, RaportService>();
 builder.Services.AddTransient<IDeliveryFactory, DeliveryFactory>();
 builder.Services.AddTransient<IRoleInfoFactory, RoleInfoFactory>();
-builder.Services.AddTransient<ITimeProvider, TimeProvider>();
+builder.Services.AddTransient<ITimeProvider, Wholesaler.Barckend.Domain.Providers.TimeProvider>();
 builder.Services.AddScoped<ITransaction, Transaction>();
 builder.Services.AddTransient<ErrorHandlingMiddleware>();
 builder.Services.AddTransient<RequestLoggingMiddleware>();
@@ -103,6 +111,7 @@ app.UseDatabase();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
+app.UseCors("AllowVueApp");
 app.MapControllers();
 app.Run();
 
