@@ -74,7 +74,7 @@ public class WorkTaskRepository : IWorkTaskRepository
         return new(
             workTaskDb.Id,
             workTaskDb.Row,
-            activities.ToList(),
+            [.. activities],
             workTaskDb.IsStarted,
             workTaskDb.IsFinished,
             person);
@@ -120,7 +120,7 @@ public class WorkTaskRepository : IWorkTaskRepository
         });
 
         workTaskDb.Row = worktask.Row;
-        workTaskDb.Activities = activities.ToList();
+        workTaskDb.Activities = [.. activities];
         workTaskDb.IsStarted = worktask.IsStarted;
         workTaskDb.IsFinished = worktask.IsFinished;
         workTaskDb.PersonId = worktask.Person?.Id;
@@ -137,7 +137,7 @@ public class WorkTaskRepository : IWorkTaskRepository
 
         var listOfWorkTasks = _workTaskFactory.Create(workTasksDbList);
 
-        return listOfWorkTasks.ToList();
+        return [.. listOfWorkTasks];
     }
 
     public List<WorkTask> GetAssigned(Guid userId)
@@ -150,7 +150,7 @@ public class WorkTaskRepository : IWorkTaskRepository
 
         var listOfWorkTasks = _workTaskFactory.Create(workTasksDbList);
 
-        return listOfWorkTasks.ToList();
+        return [.. listOfWorkTasks];
     }
 
     public List<WorkTask> GetAssigned()
@@ -163,7 +163,7 @@ public class WorkTaskRepository : IWorkTaskRepository
 
         var listOfWorkTasks = _workTaskFactory.Create(workTasksDbList);
 
-        return listOfWorkTasks.ToList();
+        return [.. listOfWorkTasks];
     }
 
     public List<WorkTask> GetStarted()
@@ -176,7 +176,7 @@ public class WorkTaskRepository : IWorkTaskRepository
 
         var listOfWorkTasks = _workTaskFactory.Create(workTasksDbList);
 
-        return listOfWorkTasks.ToList();
+        return [.. listOfWorkTasks];
     }
 
     public List<WorkTask> GetFinished()
@@ -189,6 +189,6 @@ public class WorkTaskRepository : IWorkTaskRepository
 
         var listOfWorkTasks = _workTaskFactory.Create(workTasksDbList);
 
-        return listOfWorkTasks.ToList();
+        return [.. listOfWorkTasks];
     }
 }

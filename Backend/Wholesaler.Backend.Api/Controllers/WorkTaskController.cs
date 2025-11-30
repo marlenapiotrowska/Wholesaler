@@ -84,7 +84,7 @@ public class WorkTaskController : ControllerBase
         var workday = _workTaskRepository.GetNotAssign();
 
         return workday
-            .ConvertAll(w => _workTaskFactory.Create(w));
+            .ConvertAll(_workTaskFactory.Create);
     }
 
     [HttpGet]
@@ -94,7 +94,7 @@ public class WorkTaskController : ControllerBase
         var workday = _workTaskRepository.GetAssigned();
 
         return workday
-            .ConvertAll(w => _workTaskFactory.Create(w));
+            .ConvertAll(_workTaskFactory.Create);
     }
 
     [HttpGet]
@@ -104,7 +104,7 @@ public class WorkTaskController : ControllerBase
         var workTasks = _workTaskRepository.GetAssigned(userId);
 
         return workTasks
-            .ConvertAll(w => _workTaskFactory.Create(w));
+            .ConvertAll(_workTaskFactory.Create);
     }
 
     [HttpGet]
@@ -114,7 +114,7 @@ public class WorkTaskController : ControllerBase
         var workTasks = _workTaskRepository.GetStarted();
 
         return workTasks
-            .ConvertAll(w => _workTaskFactory.Create(w));
+            .ConvertAll(_workTaskFactory.Create);
     }
 
     [HttpGet]
@@ -124,6 +124,6 @@ public class WorkTaskController : ControllerBase
         var workTasks = _workTaskRepository.GetFinished();
 
         return workTasks
-            .ConvertAll(w => _workTaskFactory.Create(w));
+            .ConvertAll(_workTaskFactory.Create);
     }
 }

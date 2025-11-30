@@ -39,6 +39,6 @@ public class DeliveryRepository : IDeliveryRepository
             .ToList();
 
         return deliveriesDb
-            .ConvertAll(d => _deliveryFactory.Create(d));
+            .ConvertAll(_deliveryFactory.Create);
     }
 }

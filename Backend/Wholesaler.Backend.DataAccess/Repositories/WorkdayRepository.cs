@@ -49,7 +49,7 @@ public class WorkdayRepository : IWorkdayRepository
             return new Workday(workdayDb.Id, workdayDb.Start, workdayDb.Stop, person);
         });
 
-        return listOfWorkdays.ToList();
+        return [.. listOfWorkdays];
     }
 
     public Workday? GetActiveByPersonOrDefault(Guid personId)

@@ -17,9 +17,7 @@ public class RaportService : IRaportService
     public float GetCosts(DateTimeOffset dateFrom, DateTimeOffset dateTo)
     {
         var deliveries = _deliveryRepository.GetForTimespan(dateFrom, dateTo);
-        var costs = GetCosts(deliveries);
-
-        return costs;
+        return GetCosts(deliveries);
     }
 
     private float GetCosts(List<Delivery> deliveries)
@@ -29,8 +27,6 @@ public class RaportService : IRaportService
         foreach (var delivery in deliveries)
             quantity += delivery.Quantity;
 
-        var costs = _multiplier * quantity;
-
-        return costs;
+        return _multiplier * quantity;
     }
 }

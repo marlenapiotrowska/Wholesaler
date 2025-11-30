@@ -32,7 +32,7 @@ internal class EmployeeView : View
     {
         var wasExitKeyPressed = false;
 
-        while (wasExitKeyPressed == false)
+        while (!wasExitKeyPressed)
         {
             Console.WriteLine("---Welcome in Wholesaler---");
             Console.WriteLine(

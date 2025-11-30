@@ -38,7 +38,7 @@ public class StorageController : ControllerBase
     {
         var storages = _repository.GetAll();
         return storages
-            .ConvertAll(s => _storageDtoFactory.Create(s));
+            .ConvertAll(_storageDtoFactory.Create);
     }
 
     [HttpPatch]

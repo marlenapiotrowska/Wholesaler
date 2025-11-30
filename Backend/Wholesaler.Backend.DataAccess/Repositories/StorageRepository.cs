@@ -49,10 +49,9 @@ public class StorageRepository : IStorageRepository
     {
         var storagesDb = _context.Storages
             .ToList()
-            ?? new();
+            ?? [];
 
-        return storagesDb.ConvertAll(storageDb =>
-            _storageDbFactory.Create(storageDb));
+        return storagesDb.ConvertAll(_storageDbFactory.Create);
     }
 
     public Storage UpdateState(Storage storage)

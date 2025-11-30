@@ -69,7 +69,7 @@ public class RequirementController : ControllerBase
     {
         var requirements = _requirementRepository.GetAll();
         return requirements
-            .ConvertAll(r => _factory.Create(r));
+            .ConvertAll(_factory.Create);
     }
 
     [HttpGet]
@@ -78,7 +78,7 @@ public class RequirementController : ControllerBase
     {
         var requirements = _requirementRepository.Get(storageId);
         return requirements
-            .ConvertAll(r => _factory.Create(r));
+            .ConvertAll(_factory.Create);
     }
 
     [HttpGet]
@@ -87,7 +87,7 @@ public class RequirementController : ControllerBase
     {
         var requirements = _requirementRepository.GetByStatus(status);
         return requirements
-            .ConvertAll(r => _factory.Create(r));
+            .ConvertAll(_factory.Create);
     }
 
     [HttpGet]
@@ -99,6 +99,6 @@ public class RequirementController : ControllerBase
         return response.Errors.Count != 0
             ? BadRequest(response.Errors)
             : response.Requirements
-            .ConvertAll(r => _factory.Create(r));
+            .ConvertAll(_factory.Create);
     }
 }
