@@ -37,13 +37,9 @@ public class RequirementRepository : IRequirementRepository
 
     public List<Requirement> GetAll()
     {
-        var requirementsDb = _context.Requirements
-            .ToList();
-
-        return requirementsDb == null
-            ? new()
-            : requirementsDb
-            .ConvertAll(requirementDb => _factory.Create(requirementDb));
+        return GetRequirementsBase()
+            .ToList()
+            .ConvertAll(_factory.Create);
     }
 
     public List<Requirement> Get(Guid storageId)
@@ -55,12 +51,12 @@ public class RequirementRepository : IRequirementRepository
         return requirementsDb == null
             ? new()
             : requirementsDb
-            .ConvertAll(requirementDb => _factory.Create(requirementDb));
+            .ConvertAll(_factory.Create);
     }
 
     public Requirement? GetOrDefault(Guid id)
     {
-        var requirementDb = _context.Requirements
+        var requirementDb = GetRequirementsBase()
             .FirstOrDefault(r => r.Id == id);
 
         return requirementDb == null
@@ -91,20 +87,17 @@ public class RequirementRepository : IRequirementRepository
         if (!Enum.TryParse(statusName, out Status requirementStatus))
             throw new InvalidDataProvidedException("You entered an invalid value of status.");
 
-        var requirementsDb = _context.Requirements
+        var requirementsDb = GetRequirementsBase()
             .Where(r => r.Status == requirementStatus)
             .ToList();
 
-        return requirementsDb == null
-            ? new()
-            : requirementsDb
-            .ConvertAll(requirementDb => _factory.Create(requirementDb));
+        return requirementsDb
+            .ConvertAll(_factory.Create);
     }
 
     public Task<List<Requirement>> GetByCustomFiltersAsync(Dictionary<string, string> customFilters)
     {
-        var query = _context.Requirements
-            .AsQueryable();
+        var query = GetRequirementsBase();
 
         foreach (var filter in customFilters)
         {
@@ -122,5 +115,12 @@ public class RequirementRepository : IRequirementRepository
         return char.ToUpper(status[0])
             + status.Substring(1)
             .ToLower();
+    }
+
+    private IQueryable<RequirementDb> GetRequirementsBase()
+    {
+        return _context.Requirements
+            .Include(r => r.Client)
+            .Include(r => r.Storage);
     }
 }

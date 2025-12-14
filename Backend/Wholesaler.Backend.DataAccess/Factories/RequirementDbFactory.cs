@@ -11,7 +11,9 @@ public class RequirementDbFactory : IRequirementDbFactory
             requirement.Id,
             requirement.Quantity,
             requirement.ClientId,
+            (requirement.Client?.Name + " " + requirement.Client?.Surname) ?? string.Empty,
             requirement.StorageId,
+            requirement.Storage?.Name ?? string.Empty,
             requirement.Status,
             requirement.DeliveryDate);
     }

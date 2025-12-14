@@ -13,7 +13,9 @@ public class RequirementDtoFactory : IRequirementDtoFactory
             Id = requirement.Id,
             Quantity = requirement.Quantity,
             ClientId = requirement.ClientId,
+            ClientName = requirement.ClientName,
             StorageId = requirement.StorageId,
+            StorageName = requirement.StorageName,
             Status = requirement.Status.ToString(),
             DeliveryDate = requirement.DeliveryDate
         };

@@ -12,11 +12,9 @@ public class RequirementFactory : IRequirementFactory
         if (request.Quantity <= 0)
             throw new InvalidDataProvidedException("You need to provide quantity more than 0.");
 
-        var requirement = new Requirement(
+        return new(
             request.Quantity,
             request.ClientId,
             request.StorageId);
-
-        return requirement;
     }
 }
