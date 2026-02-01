@@ -42,11 +42,20 @@ builder.Services.AddDbContext<WholesalerContext>(
 
 builder.Services.AddCors(options =>
 {
+    //options.AddPolicy(
+    //    "AllowVueApp",
+    //    policy => policy.WithOrigins("http://localhost:5173")
+    //                    .AllowAnyHeader()
+    //                    .AllowAnyMethod());
     options.AddPolicy(
-        "AllowVueApp",
-        policy => policy.WithOrigins("http://localhost:5173")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
+        "AllowAngularDev",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
 });
 
 builder.Host.UseSerilog((_, configuration) => configuration
@@ -111,7 +120,8 @@ app.UseDatabase();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
-app.UseCors("AllowVueApp");
+//app.UseCors("AllowVueApp");
+app.UseCors("AllowAngularDev");
 app.MapControllers();
 app.Run();
 
