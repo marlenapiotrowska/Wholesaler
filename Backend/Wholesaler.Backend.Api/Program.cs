@@ -115,7 +115,7 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseStaticFiles();
-app.UseDatabase();
+//app.UseDatabase();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
